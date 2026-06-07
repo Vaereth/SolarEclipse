@@ -7,14 +7,37 @@ window.VIEWS = window.VIEWS || {};
   const bstOf = s => Object.values(s).reduce((a, b) => a + b, 0);
 
   // ---- Stat + abilities block --------------------------------------------
-  function StatBlock({ entry }) {
+  function StatBlock({ entry, vanilla }) {
+    const [compare, setCompare] = React.useState(true);
+    const showCmp = vanilla && compare;
+    const eclipseBst = bstOf(entry.stats);
+    const vanillaBst = vanilla ? Object.values(vanilla).reduce((a, b) => a + b, 0) : null;
+    const bstDelta = vanillaBst != null ? eclipseBst - vanillaBst : 0;
+    const anyChange = vanilla && ['HP','ATK','DEF','SPA','SPD','SPE'].some(k => entry.stats[k] !== vanilla[k]);
     return (
       <div>
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 14 }}>{entry.types.map(t => <TypePill key={t} t={t} />)}</div>
-        <StatBars stats={entry.stats} />
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8, paddingTop: 10, borderTop: '1px solid #2a2110' }}>
+        {vanilla && (
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12, gap: 10, flexWrap: 'wrap' }}>
+            <button onClick={() => setCompare(c => !c)} style={{
+              cursor: 'pointer', fontFamily: "'Outfit', sans-serif", fontSize: 11, fontWeight: 600, padding: '5px 12px', borderRadius: 8,
+              background: showCmp ? '#2a1c08' : 'transparent', color: showCmp ? '#ffb347' : '#9a8d6f',
+              border: `1px solid ${showCmp ? '#ffb34788' : '#2a2110'}`,
+            }}>{showCmp ? '✓ ' : ''}Compare to vanilla</button>
+            {showCmp && (
+              <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: 11, color: '#8a7d63' }}>
+                {anyChange ? 'Δ vs official base stats' : 'No stat changes from vanilla'}
+              </span>
+            )}
+          </div>
+        )}
+        <StatBars stats={entry.stats} vanilla={showCmp ? vanilla : null} />
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 8, paddingTop: 10, borderTop: '1px solid #2a2110' }}>
           <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: 10, fontWeight: 600, letterSpacing: 1, color: '#b8a489' }}>TOTAL</span>
-          <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 16, color: '#ffb347', fontWeight: 700 }}>{bstOf(entry.stats)}</span>
+          <span style={{ display: 'inline-flex', alignItems: 'baseline', gap: 8 }}>
+            {showCmp && bstDelta !== 0 && <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 12, fontWeight: 700, color: bstDelta > 0 ? '#5fe08a' : '#ff6f6f' }}>{bstDelta > 0 ? '+' : ''}{bstDelta}</span>}
+            <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 16, color: '#ffb347', fontWeight: 700 }}>{eclipseBst}</span>
+          </span>
         </div>
         <div style={{ marginTop: 16 }}>
           <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: 10, fontWeight: 600, color: '#8a7d63', marginBottom: 8, letterSpacing: 1, textTransform: 'uppercase' }}>Abilities</div>
@@ -121,7 +144,7 @@ window.VIEWS = window.VIEWS || {};
                 ))}
               </div>
             )}
-            <StatBlock entry={cur} />
+            <StatBlock entry={cur} vanilla={vi === 0 ? (window.VSE_VANILLA && window.VSE_VANILLA[d.dex]) : null} />
             <ShinyShowcase d={d} accent={accent} />
           </div>
         </div>

@@ -56,19 +56,42 @@
 
   // ---- Stat bars ---------------------------------------------------------
   const STAT_COLORS = { HP: '#ff7a6f', ATK: '#ffb347', DEF: '#ffd23c', SPA: '#ff9e58', SPD: '#ffe07a', SPE: '#ff6f4c' };
-  function StatBars({ stats }) {
+  function StatBars({ stats, vanilla }) {
     return (
       <div>
         {Object.keys(STAT_LABELS).map(k => {
           const v = stats[k] || 0;
           const pct = Math.min(100, (v / STAT_MAX) * 100);
           const col = STAT_COLORS[k] || '#ffb347';
+          const van = vanilla ? (vanilla[k] || 0) : null;
+          const delta = van != null ? v - van : 0;
+          const vanPct = van != null ? Math.min(100, (van / STAT_MAX) * 100) : 0;
+          const up = delta > 0, down = delta < 0;
+          const dColor = up ? '#5fe08a' : down ? '#ff6f6f' : '#7a6c4a';
           return (
-            <div key={k} style={{ display: 'grid', gridTemplateColumns: '74px 34px 1fr', alignItems: 'center', gap: 10, marginBottom: 9 }}>
-              <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: 9, color: '#b8a489' }}>{STAT_LABELS[k].toUpperCase()}</span>
+            <div key={k} style={{ display: 'grid', gridTemplateColumns: vanilla ? '74px 34px 46px 1fr' : '74px 34px 1fr', alignItems: 'center', gap: 10, marginBottom: 9 }}>
+              <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: 9, fontWeight: 600, color: '#b8a489' }}>{STAT_LABELS[k].toUpperCase()}</span>
               <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 14, color: '#fff6e8', fontWeight: 700, textAlign: 'right' }}>{v}</span>
-              <div style={{ height: 9, borderRadius: 3, background: '#1a1407', overflow: 'hidden', border: '1px solid #3a2c12' }}>
-                <div style={{ width: pct + '%', height: '100%', background: col, boxShadow: `0 0 9px ${col}`, borderRadius: 2 }} />
+              {vanilla && (
+                <span title={`Vanilla: ${van}`} style={{ fontFamily: "'Space Mono', monospace", fontSize: 12, fontWeight: 700, color: dColor, textAlign: 'right' }}>
+                  {delta === 0 ? '—' : (up ? '+' : '') + delta}
+                </span>
+              )}
+              <div style={{ position: 'relative', height: 9, borderRadius: 3, background: '#1a1407', overflow: 'hidden', border: '1px solid #3a2c12' }}>
+                {/* base fill (unchanged portion shown in stat color, gained portion in green, lost portion ghosted) */}
+                {down ? (
+                  <React.Fragment>
+                    <div style={{ position: 'absolute', left: 0, top: 0, width: vanPct + '%', height: '100%', background: '#ff6f6f22', borderRadius: 2 }} />
+                    <div style={{ position: 'absolute', left: 0, top: 0, width: pct + '%', height: '100%', background: col, boxShadow: `0 0 9px ${col}`, borderRadius: 2 }} />
+                  </React.Fragment>
+                ) : (
+                  <React.Fragment>
+                    <div style={{ position: 'absolute', left: 0, top: 0, width: pct + '%', height: '100%', background: col, boxShadow: `0 0 9px ${col}`, borderRadius: 2 }} />
+                    {up && <div style={{ position: 'absolute', left: vanPct + '%', top: 0, width: (pct - vanPct) + '%', height: '100%', background: '#5fe08a', boxShadow: '0 0 9px #5fe08a', borderRadius: 2 }} />}
+                  </React.Fragment>
+                )}
+                {/* vanilla level marker */}
+                {vanilla && delta !== 0 && <div style={{ position: 'absolute', left: vanPct + '%', top: -1, width: 2, height: 11, background: '#fff', opacity: 0.7 }} title={`Vanilla ${van}`} />}
               </div>
             </div>
           );
