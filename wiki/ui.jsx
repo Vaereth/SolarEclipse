@@ -24,7 +24,7 @@
   }
 
   // ---- Sprite slot (auto-loads sprites/<dex>.png if present) -------------
-  function SpriteSlot({ dex, name, size = 120, label, accent = '#ffb347', suffix }) {
+  function SpriteSlot({ dex, name, size = 120, label, accent = '#ffb347', suffix, imgFilter }) {
     const knownBase = dex && window.SPRITE_SET && window.SPRITE_SET.has(String(dex));
     const hasSrc = dex && (suffix !== undefined || knownBase || !window.SPRITE_SET);
     const cacheKey = window.SPRITE_VERSION ? `?v=${window.SPRITE_VERSION}` : '';
@@ -41,7 +41,7 @@
         <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle at 50% 44%, transparent 30%, #ffb34711 42%, transparent 52%)' }} />
         <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(1px 1px at 20% 30%, #fff7, transparent), radial-gradient(1px 1px at 70% 60%, #fff5, transparent), radial-gradient(1px 1px at 42% 80%, #fff6, transparent), radial-gradient(2px 2px at 62% 22%, #ffd98a88, transparent)' }} />
         {src && <img src={src} alt={name} onLoad={() => setOk(true)} onError={() => setOk(false)}
-          style={{ position: 'absolute', inset: '8%', width: '84%', height: '84%', objectFit: 'contain', imageRendering: 'pixelated', display: ok ? 'block' : 'none', zIndex: 3 }} />}
+          style={{ position: 'absolute', inset: '8%', width: '84%', height: '84%', objectFit: 'contain', imageRendering: 'pixelated', display: ok ? 'block' : 'none', zIndex: 3, filter: imgFilter || 'none' }} />}
         {!ok && (
           <div style={{
             position: 'relative', zIndex: 2, width: '72%', height: '72%', borderRadius: 8,

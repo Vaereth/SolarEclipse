@@ -1,0 +1,131 @@
+/* Pokémon Solar Eclipse — full Pokémon detail page. window.VIEWS.Detail
+   Mirrors Void's view-detail routing: reached via #/pokemon/<dex>. */
+window.VIEWS = window.VIEWS || {};
+(function () {
+  const { DEX, TYPES, byDex } = window.VSEDEX;
+  const { go, TypePill, SpriteSlot, StatBars, PageHead, Empty } = window.VUI;
+  const bstOf = s => Object.values(s).reduce((a, b) => a + b, 0);
+
+  // ---- Stat + abilities block --------------------------------------------
+  function StatBlock({ entry }) {
+    return (
+      <div>
+        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 14 }}>{entry.types.map(t => <TypePill key={t} t={t} />)}</div>
+        <StatBars stats={entry.stats} />
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8, paddingTop: 10, borderTop: '1px solid #2a2110' }}>
+          <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: 10, fontWeight: 600, letterSpacing: 1, color: '#b8a489' }}>TOTAL</span>
+          <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 16, color: '#ffb347', fontWeight: 700 }}>{bstOf(entry.stats)}</span>
+        </div>
+        <div style={{ marginTop: 16 }}>
+          <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: 10, fontWeight: 600, color: '#8a7d63', marginBottom: 8, letterSpacing: 1, textTransform: 'uppercase' }}>Abilities</div>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            {entry.abilities.map(a => <span key={a} style={{ padding: '5px 12px', borderRadius: 7, background: '#1a1407', border: '1px solid #3a2c12', color: '#ffe0b0', fontSize: 13 }}>{a}</span>)}
+            {entry.hidden && <span style={{ padding: '5px 12px', borderRadius: 7, background: '#2a1c08', border: '1px solid #ffb34755', color: '#ffb347', fontSize: 13 }}>{entry.hidden} <span style={{ fontSize: 9, opacity: 0.7 }}>HA</span></span>}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ---- Shiny / Super Shiny showcase --------------------------------------
+  // Super shiny hue-shifts the SHINY sprite in 45° increments, per the game's
+  // adjust_shiny logic: superHue = (1 + rand(7)) * 45  ->  45..360. The filter
+  // is applied to the sprite image only, never its background.
+  function ShinyShowcase({ d, accent }) {
+    const HUE_STEPS = [45, 90, 135, 180, 225, 270, 315, 360];
+    const [step, setStep] = React.useState(0);
+    const [variant, setVariant] = React.useState(false);
+    const hue = HUE_STEPS[step];
+    const shinyFilter = 'hue-rotate(40deg) saturate(1.35) brightness(1.06)';
+    const superFilter = `hue-rotate(${hue}deg) saturate(1.5) brightness(1.08)${variant ? ' invert(0.08)' : ''}`;
+    const cell = (label, color, filter, extra) => (
+      <div style={{ flex: 1, minWidth: 130, padding: 14, borderRadius: 12, background: '#0d0a04', border: `1px solid ${color}44`, textAlign: 'center' }}>
+        <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1, color, marginBottom: 10, textTransform: 'uppercase' }}>{label}</div>
+        <SpriteSlot dex={d.dex} name={d.name} size={104} accent={color} imgFilter={filter} />
+        {extra}
+      </div>
+    );
+    return (
+      <div style={{ marginTop: 26 }}>
+        <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: 10, fontWeight: 600, color: '#8a7d63', marginBottom: 12, letterSpacing: 1, textTransform: 'uppercase' }}>Sprite Showcase</div>
+        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+          {cell('Normal', accent, 'none')}
+          {cell('Shiny', '#ffd700', shinyFilter)}
+          {cell('Super Shiny', '#ff66cc', superFilter, (
+            <div style={{ marginTop: 12 }}>
+              <input type="range" min={0} max={HUE_STEPS.length - 1} step={1} value={step}
+                onChange={e => setStep(Number(e.target.value))}
+                style={{ width: '100%', accentColor: '#ff66cc', cursor: 'pointer' }} />
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 6 }}>
+                <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 12, color: '#ff8fd6' }}>+{hue}°</span>
+                <button onClick={() => setVariant(v => !v)} title="superVariant palette flip"
+                  style={{ cursor: 'pointer', fontFamily: "'Outfit', sans-serif", fontSize: 9, fontWeight: 600, padding: '3px 8px', borderRadius: 6, background: variant ? '#ff66cc22' : 'transparent', color: variant ? '#ff8fd6' : '#7a6c4a', border: `1px solid ${variant ? '#ff66cc66' : '#2a2110'}` }}>VARIANT</button>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: 11, color: '#6a5d42', marginTop: 10, lineHeight: 1.5 }}>
+          Super shiny shifts the shiny sprite's hue in 45° steps (8 possible hues). Shiny sprites are placeholders until the game's real rips are added.
+        </div>
+      </div>
+    );
+  }
+
+  // ---- Full detail page --------------------------------------------------
+  window.VIEWS.Detail = function Detail({ param }) {
+    const d = byDex[param];
+    const [vi, setVi] = React.useState(0);
+    React.useEffect(() => { setVi(0); }, [param]);
+
+    if (!d) return <Empty label={`No Pokémon found for #${param}.`} />;
+
+    const accent = TYPES[d.types[0]].glow;
+    const variants = [{ label: 'Base', name: d.name, types: d.types, abilities: d.abilities, hidden: d.hidden, stats: d.stats }, ...(d.forms || [])];
+    const cur = variants[vi];
+
+    // prev / next dex navigation
+    const idx = DEX.findIndex(x => x.dex === d.dex);
+    const prev = idx > 0 ? DEX[idx - 1] : DEX[DEX.length - 1];
+    const next = idx < DEX.length - 1 ? DEX[idx + 1] : DEX[0];
+
+    return (
+      <div>
+        {/* breadcrumb + prev/next */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, flexWrap: 'wrap', gap: 10 }}>
+          <button onClick={() => go('#/pokedex')} style={{ cursor: 'pointer', fontFamily: "'Outfit', sans-serif", fontSize: 13, fontWeight: 600, color: '#b3a892', background: 'transparent', border: '1px solid #2a2110', borderRadius: 8, padding: '7px 14px' }}>← Pokédex</button>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button onClick={() => go('#/pokemon/' + prev.dex)} style={{ cursor: 'pointer', fontFamily: "'Outfit', sans-serif", fontSize: 12, color: '#9a8d6f', background: 'transparent', border: '1px solid #2a2110', borderRadius: 8, padding: '7px 12px' }}>← No.{prev.dex}</button>
+            <button onClick={() => go('#/pokemon/' + next.dex)} style={{ cursor: 'pointer', fontFamily: "'Outfit', sans-serif", fontSize: 12, color: '#9a8d6f', background: 'transparent', border: '1px solid #2a2110', borderRadius: 8, padding: '7px 12px' }}>No.{next.dex} →</button>
+          </div>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: '300px 1fr', gap: 32, alignItems: 'start' }} className="se-detail-grid">
+          {/* left: hero sprite + name */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14, position: 'sticky', top: 20 }}>
+            <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: 13, fontWeight: 600, letterSpacing: 2, color: '#7a6c4a' }}>No.{d.dex}</div>
+            <SpriteSlot dex={d.dex} name={cur.name} size={240} accent={accent} suffix={vi > 0 ? String(vi) : undefined} label="HERO SPRITE" />
+            <div style={{ fontFamily: "'Cinzel', Georgia, 'Times New Roman', serif", fontWeight: 800, fontSize: 38, color: '#fff', textAlign: 'center', lineHeight: 1, textShadow: `0 0 24px ${accent}44` }}>{cur.name}</div>
+            {d.evoNote && vi === 0 && <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: 13, color: '#9a8d6f', textAlign: 'center', maxWidth: 260 }}>Evolves {d.evoNote}</div>}
+          </div>
+
+          {/* right: forms + stats + showcase */}
+          <div style={{ background: 'linear-gradient(160deg, #14100a, #0a0805)', border: `1px solid ${accent}33`, borderRadius: 16, padding: 26 }}>
+            {variants.length > 1 && (
+              <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 20 }}>
+                {variants.map((v, i) => (
+                  <button key={i} onClick={() => setVi(i)} style={{
+                    cursor: 'pointer', padding: '6px 13px', borderRadius: 8, fontSize: 12, fontFamily: "'Outfit', sans-serif",
+                    background: vi === i ? '#2a1c08' : 'transparent', color: vi === i ? '#ffb347' : '#9a8d6f',
+                    border: `1px solid ${vi === i ? '#ffb34788' : '#2a2110'}`, fontWeight: vi === i ? 600 : 400,
+                  }}>{i === 0 ? 'Base' : (v.label || `Form ${i}`)}</button>
+                ))}
+              </div>
+            )}
+            <StatBlock entry={cur} />
+            <ShinyShowcase d={d} accent={accent} />
+          </div>
+        </div>
+      </div>
+    );
+  };
+})();
