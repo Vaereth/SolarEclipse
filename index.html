@@ -7,13 +7,13 @@
 <meta name="theme-color" content="#0a0805" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&family=Silkscreen:wght@400;700&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
 <style>
   html, body { margin: 0; padding: 0; }
   body {
     background: #0a0805;
     color: #ece3d2;
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'Outfit', sans-serif;
     min-height: 100vh;
   }
   /* layered starfield + eclipse corona glow */
@@ -72,14 +72,14 @@
         <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, padding: '22px 0 26px', flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <div style={{ width: 30, height: 30, borderRadius: '50%', background: 'radial-gradient(circle at 38% 38%, #1a1206 0%, #1a1206 52%, transparent 53%), radial-gradient(circle at 50% 50%, #ffb347 0%, #ff8a3c 60%, #6e3c10 100%)', boxShadow: '0 0 18px #ffb34777', position: 'relative' }} />
-            <span style={{ fontFamily: "'Pixelify Sans', sans-serif", fontWeight: 700, fontSize: 22, color: '#fff', letterSpacing: 0.5 }}>
+            <span style={{ fontFamily: "'Cinzel', serif", fontWeight: 700, fontSize: 22, color: '#fff', letterSpacing: 0.5 }}>
               SOLAR<span style={{ color: '#ffb347' }}>ECLIPSE</span>
             </span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 9, padding: '8px 14px', borderRadius: 10, background: '#0f0b04', border: '1px solid #2a2110', minWidth: 240, flex: '0 1 320px' }}>
             <span style={{ color: '#7a6c4a', fontSize: 15 }}>⌕</span>
             <input value={query} onChange={e => setQuery(e.target.value)} placeholder="Search the dex…"
-              style={{ border: 'none', outline: 'none', background: 'transparent', color: '#ece3d2', fontFamily: "'Space Grotesk', sans-serif", fontSize: 14, width: '100%' }} />
+              style={{ border: 'none', outline: 'none', background: 'transparent', color: '#ece3d2', fontFamily: "'Outfit', sans-serif", fontSize: 14, width: '100%' }} />
             {query && <button onClick={() => setQuery('')} style={{ cursor: 'pointer', background: 'transparent', border: 'none', color: '#7a6c4a', fontSize: 15 }}>×</button>}
           </div>
         </header>

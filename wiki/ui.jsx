@@ -13,7 +13,7 @@
         style={{
           display: 'inline-flex', alignItems: 'center', gap: 6, cursor: 'pointer',
           padding: sm ? '3px 9px' : '5px 13px', borderRadius: 999, background: glow ? `${c.bg}cc` : c.bg, color: c.fg,
-          fontFamily: "'Silkscreen', monospace", fontSize: sm ? 9 : 11, letterSpacing: 0.5, textTransform: 'uppercase',
+          fontFamily: "'Outfit', sans-serif", fontSize: sm ? 9 : 11, letterSpacing: 0.5, textTransform: 'uppercase',
           border: `1px solid ${c.glow}${glow ? '' : '55'}`,
           boxShadow: glow ? `0 0 16px ${c.glow}55, inset 0 0 12px ${c.glow}33` : `inset 0 0 10px ${c.glow}22`,
         }}>
@@ -65,7 +65,7 @@
           const col = STAT_COLORS[k] || '#ffb347';
           return (
             <div key={k} style={{ display: 'grid', gridTemplateColumns: '74px 34px 1fr', alignItems: 'center', gap: 10, marginBottom: 9 }}>
-              <span style={{ fontFamily: "'Silkscreen', monospace", fontSize: 9, color: '#b8a489' }}>{STAT_LABELS[k].toUpperCase()}</span>
+              <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: 9, color: '#b8a489' }}>{STAT_LABELS[k].toUpperCase()}</span>
               <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 14, color: '#fff6e8', fontWeight: 700, textAlign: 'right' }}>{v}</span>
               <div style={{ height: 9, borderRadius: 3, background: '#1a1407', overflow: 'hidden', border: '1px solid #3a2c12' }}>
                 <div style={{ width: pct + '%', height: '100%', background: col, boxShadow: `0 0 9px ${col}`, borderRadius: 2 }} />
@@ -81,7 +81,7 @@
   function Panel({ title, children, style }) {
     return (
       <section style={{ background: '#0f0b04cc', border: '1px solid #2a2110', borderRadius: 14, padding: 18, ...style }}>
-        {title && <h3 style={{ margin: '0 0 14px', fontFamily: "'Silkscreen', monospace", fontSize: 11, letterSpacing: 1, color: '#ffb347', textTransform: 'uppercase' }}>{title}</h3>}
+        {title && <h3 style={{ margin: '0 0 14px', fontFamily: "'Outfit', sans-serif", fontSize: 11, letterSpacing: 1, color: '#ffb347', textTransform: 'uppercase' }}>{title}</h3>}
         {children}
       </section>
     );
@@ -91,8 +91,8 @@
   function PageHead({ kicker, title, sub }) {
     return (
       <div style={{ marginBottom: 26 }}>
-        {kicker && <div style={{ fontFamily: "'Silkscreen', monospace", fontSize: 11, letterSpacing: 2, color: '#ffb347', marginBottom: 10 }}>{kicker}</div>}
-        <h1 className="v-pagehead" style={{ margin: 0, fontFamily: "'Pixelify Sans', sans-serif", fontWeight: 700, fontSize: 46, lineHeight: 1, color: '#fff', textShadow: '0 0 28px #ffb34755' }}>{title}</h1>
+        {kicker && <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: 11, letterSpacing: 2, color: '#ffb347', marginBottom: 10 }}>{kicker}</div>}
+        <h1 className="v-pagehead" style={{ margin: 0, fontFamily: "'Cinzel', serif", fontWeight: 700, fontSize: 46, lineHeight: 1, color: '#fff', textShadow: '0 0 28px #ffb34755' }}>{title}</h1>
         {sub && <p style={{ margin: '12px 0 0', fontSize: 16, color: '#b3a892', maxWidth: 640, textWrap: 'pretty' }}>{sub}</p>}
       </div>
     );
