@@ -57,14 +57,14 @@ window.VIEWS = window.VIEWS || {};
   function ShinyShowcase({ d, accent, vi }) {
     const HUE_STEPS = [45, 90, 135, 180, 225, 270, 315, 360];
     const [step, setStep] = React.useState(0);
-    const [variant, setVariant] = React.useState(false);
     const hue = HUE_STEPS[step];
     // Sprite suffixes: base variant (vi 0) -> "", "shiny"; form i -> "i", "i-shiny".
     const formPart = vi > 0 ? String(vi) + '-' : '';
     const normalSuffix = vi > 0 ? String(vi) : undefined;
     const shinySuffix = formPart + 'shiny';
-    // Super shiny = the SHINY sprite, hue-shifted in 45° increments (game's adjust_shiny logic).
-    const superFilter = `hue-rotate(${hue}deg) saturate(1.15)${variant ? ' invert(0.06)' : ''}`;
+    // Super shiny = the SHINY sprite hue-shifted in 45° increments (game's adjust_shiny:
+    // superHue = (1 + rand(7)) * 45). Pure hue rotation, no other effects.
+    const superFilter = `hue-rotate(${hue}deg)`;
     const cell = (label, color, suffix, filter, extra) => (
       <div style={{ flex: 1, minWidth: 130, padding: 14, borderRadius: 12, background: '#0d0a04', border: `1px solid ${color}44`, textAlign: 'center' }}>
         <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1, color, marginBottom: 10, textTransform: 'uppercase' }}>{label}</div>
@@ -83,16 +83,14 @@ window.VIEWS = window.VIEWS || {};
               <input type="range" min={0} max={HUE_STEPS.length - 1} step={1} value={step}
                 onChange={e => setStep(Number(e.target.value))}
                 style={{ width: '100%', accentColor: '#ff66cc', cursor: 'pointer' }} />
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 6 }}>
-                <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 12, color: '#ff8fd6' }}>+{hue}°</span>
-                <button onClick={() => setVariant(v => !v)} title="superVariant palette flip"
-                  style={{ cursor: 'pointer', fontFamily: "'Outfit', sans-serif", fontSize: 9, fontWeight: 600, padding: '3px 8px', borderRadius: 6, background: variant ? '#ff66cc22' : 'transparent', color: variant ? '#ff8fd6' : '#7a6c4a', border: `1px solid ${variant ? '#ff66cc66' : '#2a2110'}` }}>VARIANT</button>
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 6 }}>
+                <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 12, color: '#ff8fd6' }}>shiny hue +{hue}°</span>
               </div>
             </div>
           ))}
         </div>
         <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: 11, color: '#6a5d42', marginTop: 10, lineHeight: 1.5 }}>
-          Shiny uses the real shiny sprite. Super shiny hue-shifts the shiny in 45° steps (8 possible hues), per the game's adjust_shiny logic.
+          Shiny is the real shiny sprite. Super shiny rotates the shiny's hue in 45° steps (the game's <code>superHue = (1 + rand(7)) × 45</code>). Note: this is a browser hue-rotate preview and approximates — not exactly matches — the game's in-engine palette shift; real super-shiny rips would be exact.
         </div>
       </div>
     );
