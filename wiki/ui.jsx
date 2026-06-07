@@ -92,7 +92,7 @@
     return (
       <div style={{ marginBottom: 26 }}>
         {kicker && <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: 11, letterSpacing: 2, color: '#ffb347', marginBottom: 10 }}>{kicker}</div>}
-        <h1 className="v-pagehead" style={{ margin: 0, fontFamily: "'Cinzel', serif", fontWeight: 700, fontSize: 46, lineHeight: 1, color: '#fff', textShadow: '0 0 28px #ffb34755' }}>{title}</h1>
+        <h1 className="v-pagehead" style={{ margin: 0, fontFamily: "'Cinzel', Georgia, 'Times New Roman', serif", fontWeight: 700, fontSize: 46, lineHeight: 1, color: '#fff', textShadow: '0 0 28px #ffb34755' }}>{title}</h1>
         {sub && <p style={{ margin: '12px 0 0', fontSize: 16, color: '#b3a892', maxWidth: 640, textWrap: 'pretty' }}>{sub}</p>}
       </div>
     );

@@ -28,7 +28,7 @@ window.VIEWS = window.VIEWS || {};
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}>
           <SpriteSlot dex={d.dex} name={d.name} size={132} accent={accent} />
         </div>
-        <div style={{ fontFamily: "'Cinzel', serif", fontWeight: 700, fontSize: 22, color: '#fff', lineHeight: 1 }}>{d.name}</div>
+        <div style={{ fontFamily: "'Cinzel', Georgia, 'Times New Roman', serif", fontWeight: 700, fontSize: 22, color: '#fff', lineHeight: 1 }}>{d.name}</div>
         <div style={{ fontSize: 12, color: '#9a8d6f', margin: '3px 0 10px', minHeight: 14 }}>{d.category || '\u2014'}</div>
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 10 }}>{d.types.map(t => <TypePill key={t} t={t} sm onClick={(e) => { e.stopPropagation(); onOpen(d); }} />)}</div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 10, borderTop: '1px solid #1c1609' }}>
@@ -80,7 +80,7 @@ window.VIEWS = window.VIEWS || {};
           <div style={{ padding: 22, display: 'grid', gridTemplateColumns: '180px 1fr', gap: 24, alignItems: 'start' }} className="se-detail-grid">
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
               <SpriteSlot dex={d.dex} name={cur.name} size={160} accent={accent} suffix={vi > 0 ? String(vi) : undefined} />
-              <div style={{ fontFamily: "'Cinzel', serif", fontWeight: 700, fontSize: 28, color: '#fff', textAlign: 'center', lineHeight: 1 }}>{cur.name}</div>
+              <div style={{ fontFamily: "'Cinzel', Georgia, 'Times New Roman', serif", fontWeight: 700, fontSize: 28, color: '#fff', textAlign: 'center', lineHeight: 1 }}>{cur.name}</div>
               {d.evoNote && vi === 0 && <div style={{ fontSize: 12, color: '#9a8d6f', textAlign: 'center' }}>Evolves {d.evoNote}</div>}
             </div>
             <div>
