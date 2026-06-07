@@ -139,9 +139,10 @@ window.VIEWS = window.VIEWS || {};
               const on = filters.includes(t); const c = TYPES[t];
               return (
                 <button key={t} onClick={() => toggle(t)} style={{
-                  cursor: 'pointer', padding: '4px 10px', borderRadius: 999, fontFamily: "'Outfit', sans-serif", fontSize: 9, letterSpacing: 0.5,
-                  textTransform: 'uppercase', color: on ? c.fg : '#8a7d5a', background: on ? c.bg : 'transparent',
-                  border: `1px solid ${on ? c.glow : '#2c2413'}`, opacity: on ? 1 : 0.7,
+                  cursor: 'pointer', padding: '4px 10px', borderRadius: 999, fontFamily: "'Outfit', sans-serif", fontSize: 9, letterSpacing: 0.5, fontWeight: 600,
+                  textTransform: 'uppercase', color: on ? c.fg : c.glow, background: on ? c.bg : c.glow + '14',
+                  border: `1px solid ${on ? c.glow : c.glow + '66'}`, opacity: on ? 1 : 0.85,
+                  boxShadow: on ? `0 0 12px ${c.glow}55, inset 0 0 10px ${c.glow}33` : 'none', transition: 'all .15s',
                 }}>{c.name}</button>
               );
             })}
