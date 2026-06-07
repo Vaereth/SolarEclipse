@@ -29,13 +29,59 @@ window.VIEWS = window.VIEWS || {};
           <SpriteSlot dex={d.dex} name={d.name} size={132} accent={accent} />
         </div>
         <div style={{ fontFamily: "'Cinzel', Georgia, 'Times New Roman', serif", fontWeight: 700, fontSize: 22, color: '#fff', lineHeight: 1 }}>{d.name}</div>
-        <div style={{ fontSize: 12, color: '#9a8d6f', margin: '3px 0 10px', minHeight: 14 }}>{d.category || '\u2014'}</div>
+        <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: 11.5, color: '#b39a72', margin: '4px 0 10px', minHeight: 14, lineHeight: 1.35 }}>
+          {[...d.abilities, ...(d.hidden ? [d.hidden] : [])].join(' · ') || '\u2014'}
+        </div>
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 10 }}>{d.types.map(t => <TypePill key={t} t={t} sm onClick={(e) => { e.stopPropagation(); onOpen(d); }} />)}</div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 10, borderTop: '1px solid #1c1609' }}>
           <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: 8, color: '#7a6c4a' }}>BST</span>
           <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 14, color: accent, fontWeight: 700 }}>{total}</span>
         </div>
       </button>
+    );
+  }
+
+  // ---- Shiny / Super Shiny showcase --------------------------------------
+  // Super shiny hue-shifts the shiny sprite in 45° increments (per the game's
+  // adjust_shiny logic: superHue = (1 + rand(7)) * 45  ->  45..360).
+  function ShinyShowcase({ d, accent }) {
+    const HUE_STEPS = [45, 90, 135, 180, 225, 270, 315, 360];
+    const [step, setStep] = React.useState(0);          // index into HUE_STEPS
+    const [variant, setVariant] = React.useState(false); // superVariant flag (alt palette flip)
+    const hue = HUE_STEPS[step];
+    // Shiny stand-in: gold-ward hue rotate on the base sprite until real shiny rips exist.
+    const shinyFilter = 'hue-rotate(40deg) saturate(1.35) brightness(1.06)';
+    const superFilter = `hue-rotate(${hue}deg) saturate(1.5) brightness(1.08)${variant ? ' invert(0.08)' : ''}`;
+    const cell = (label, color, filter, extra) => (
+      <div style={{ flex: 1, minWidth: 120, padding: 12, borderRadius: 12, background: '#0d0a04', border: `1px solid ${color}44`, textAlign: 'center' }}>
+        <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1, color, marginBottom: 8, textTransform: 'uppercase' }}>{label}</div>
+        <div style={{ filter, display: 'inline-block' }}><SpriteSlot dex={d.dex} name={d.name} size={92} accent={color} /></div>
+        {extra}
+      </div>
+    );
+    return (
+      <div style={{ marginTop: 18, paddingTop: 16, borderTop: '1px solid #2a2110' }}>
+        <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: 9, color: '#8a7d63', marginBottom: 10, letterSpacing: 1, textTransform: 'uppercase' }}>Sprite Showcase</div>
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+          {cell('Normal', accent, 'none')}
+          {cell('Shiny', '#ffd700', shinyFilter)}
+          {cell('Super Shiny', '#ff66cc', superFilter, (
+            <div style={{ marginTop: 10 }}>
+              <input type="range" min={0} max={HUE_STEPS.length - 1} step={1} value={step}
+                onChange={e => setStep(Number(e.target.value))}
+                style={{ width: '100%', accentColor: '#ff66cc', cursor: 'pointer' }} />
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 4 }}>
+                <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: '#ff8fd6' }}>+{hue}°</span>
+                <button onClick={() => setVariant(v => !v)} title="superVariant palette flip"
+                  style={{ cursor: 'pointer', fontFamily: "'Outfit', sans-serif", fontSize: 9, padding: '2px 7px', borderRadius: 6, background: variant ? '#ff66cc22' : 'transparent', color: variant ? '#ff8fd6' : '#7a6c4a', border: `1px solid ${variant ? '#ff66cc66' : '#2a2110'}` }}>VARIANT</button>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: 10, color: '#6a5d42', marginTop: 8 }}>
+          Super shiny shifts the shiny hue in 45° steps (8 possible hues). Sprites are placeholders until the game's shiny rips are added.
+        </div>
+      </div>
     );
   }
 
@@ -96,6 +142,7 @@ window.VIEWS = window.VIEWS || {};
                 </div>
               )}
               <StatBlock entry={cur} />
+              <ShinyShowcase d={d} accent={accent} />
             </div>
           </div>
         </div>
