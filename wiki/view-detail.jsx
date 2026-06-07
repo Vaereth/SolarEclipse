@@ -54,17 +54,21 @@ window.VIEWS = window.VIEWS || {};
   // Super shiny hue-shifts the SHINY sprite in 45° increments, per the game's
   // adjust_shiny logic: superHue = (1 + rand(7)) * 45  ->  45..360. The filter
   // is applied to the sprite image only, never its background.
-  function ShinyShowcase({ d, accent }) {
+  function ShinyShowcase({ d, accent, vi }) {
     const HUE_STEPS = [45, 90, 135, 180, 225, 270, 315, 360];
     const [step, setStep] = React.useState(0);
     const [variant, setVariant] = React.useState(false);
     const hue = HUE_STEPS[step];
-    const shinyFilter = 'hue-rotate(40deg) saturate(1.35) brightness(1.06)';
-    const superFilter = `hue-rotate(${hue}deg) saturate(1.5) brightness(1.08)${variant ? ' invert(0.08)' : ''}`;
-    const cell = (label, color, filter, extra) => (
+    // Sprite suffixes: base variant (vi 0) -> "", "shiny"; form i -> "i", "i-shiny".
+    const formPart = vi > 0 ? String(vi) + '-' : '';
+    const normalSuffix = vi > 0 ? String(vi) : undefined;
+    const shinySuffix = formPart + 'shiny';
+    // Super shiny = the SHINY sprite, hue-shifted in 45° increments (game's adjust_shiny logic).
+    const superFilter = `hue-rotate(${hue}deg) saturate(1.15)${variant ? ' invert(0.06)' : ''}`;
+    const cell = (label, color, suffix, filter, extra) => (
       <div style={{ flex: 1, minWidth: 130, padding: 14, borderRadius: 12, background: '#0d0a04', border: `1px solid ${color}44`, textAlign: 'center' }}>
         <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: 1, color, marginBottom: 10, textTransform: 'uppercase' }}>{label}</div>
-        <SpriteSlot dex={d.dex} name={d.name} size={104} accent={color} imgFilter={filter} />
+        <SpriteSlot dex={d.dex} name={d.name} size={104} accent={color} suffix={suffix} imgFilter={filter} />
         {extra}
       </div>
     );
@@ -72,9 +76,9 @@ window.VIEWS = window.VIEWS || {};
       <div style={{ marginTop: 26 }}>
         <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: 10, fontWeight: 600, color: '#8a7d63', marginBottom: 12, letterSpacing: 1, textTransform: 'uppercase' }}>Sprite Showcase</div>
         <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-          {cell('Normal', accent, 'none')}
-          {cell('Shiny', '#ffd700', shinyFilter)}
-          {cell('Super Shiny', '#ff66cc', superFilter, (
+          {cell('Normal', accent, normalSuffix, 'none')}
+          {cell('Shiny', '#ffd700', shinySuffix, 'none')}
+          {cell('Super Shiny', '#ff66cc', shinySuffix, superFilter, (
             <div style={{ marginTop: 12 }}>
               <input type="range" min={0} max={HUE_STEPS.length - 1} step={1} value={step}
                 onChange={e => setStep(Number(e.target.value))}
@@ -88,7 +92,7 @@ window.VIEWS = window.VIEWS || {};
           ))}
         </div>
         <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: 11, color: '#6a5d42', marginTop: 10, lineHeight: 1.5 }}>
-          Super shiny shifts the shiny sprite's hue in 45° steps (8 possible hues). Shiny sprites are placeholders until the game's real rips are added.
+          Shiny uses the real shiny sprite. Super shiny hue-shifts the shiny in 45° steps (8 possible hues), per the game's adjust_shiny logic.
         </div>
       </div>
     );
@@ -145,7 +149,7 @@ window.VIEWS = window.VIEWS || {};
               </div>
             )}
             <StatBlock entry={cur} vanilla={vi === 0 ? (window.VSE_VANILLA && window.VSE_VANILLA[d.dex]) : null} />
-            <ShinyShowcase d={d} accent={accent} />
+            <ShinyShowcase d={d} accent={accent} vi={vi} />
           </div>
         </div>
       </div>
