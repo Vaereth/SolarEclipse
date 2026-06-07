@@ -31,7 +31,7 @@ window.VIEWS = window.VIEWS || {};
         </div>
         <div style={{ fontFamily: "'Cinzel', Georgia, 'Times New Roman', serif", fontWeight: 700, fontSize: 22, color: '#fff', lineHeight: 1 }}>{d.name}</div>
         <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: 11.5, color: '#b39a72', margin: '4px 0 10px', minHeight: 14, lineHeight: 1.35 }}>
-          {[...d.abilities, ...(d.hidden ? [d.hidden] : [])].join(' \u00b7 ') || '\u2014'}
+          {[...d.abilities, ...(d.hidden ? [d.hidden] : [])].join(' · ') || '—'}
         </div>
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 10 }}>{d.types.map(t => <TypePill key={t} t={t} sm onClick={(e) => { e.stopPropagation(); open(); }} />)}</div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 10, borderTop: '1px solid #1c1609' }}>
@@ -68,8 +68,8 @@ window.VIEWS = window.VIEWS || {};
 
     return (
       <div>
-        <PageHead kicker="REGIONAL SOLDEX" title="Pok\u00e9dex"
-          sub="Every species catalogued for Pok\u00e9mon Solar Eclipse. Filter by type, search by name, and open any entry for its stats, abilities, and alternate forms." />
+        <PageHead kicker="REGIONAL SOLDEX" title="Pokédex"
+          sub="Every species catalogued for Pokémon Solar Eclipse. Filter by type, search by name, and open any entry for its stats, abilities, and alternate forms." />
 
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, marginBottom: 16, flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
@@ -84,17 +84,17 @@ window.VIEWS = window.VIEWS || {};
                 }}>{c.name}</button>
               );
             })}
-            {filters.length > 0 && <button onClick={() => setFilters([])} style={{ cursor: 'pointer', padding: '4px 10px', borderRadius: 999, fontSize: 11, color: '#ff8f6f', background: 'transparent', border: '1px solid #5e3020', fontFamily: "'Outfit', sans-serif" }}>clear \u00d7</button>}
+            {filters.length > 0 && <button onClick={() => setFilters([])} style={{ cursor: 'pointer', padding: '4px 10px', borderRadius: 999, fontSize: 11, color: '#ff8f6f', background: 'transparent', border: '1px solid #5e3020', fontFamily: "'Outfit', sans-serif" }}>clear ×</button>}
           </div>
           <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
             <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: 9, fontWeight: 600, letterSpacing: 1, color: '#7a6c4a' }}>SORT</span>
-            <SortBtn id="dex" label="Dex \u2116" /><SortBtn id="name" label="A\u2013Z" /><SortBtn id="bst" label="Total" />
+            <SortBtn id="dex" label="Dex №" /><SortBtn id="name" label="A–Z" /><SortBtn id="bst" label="Total" />
           </div>
         </div>
 
         <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 12, color: '#8a7d63', marginBottom: 16 }}>{list.length} {list.length === 1 ? 'entry' : 'entries'}</div>
 
-        {list.length === 0 ? <Empty label="No Pok\u00e9mon match your filters." /> : (
+        {list.length === 0 ? <Empty label="No Pokémon match your filters." /> : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(216px, 1fr))', gap: 16 }}>
             {list.map(d => <Card key={d.dex} d={d} />)}
           </div>
